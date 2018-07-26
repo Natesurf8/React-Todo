@@ -57,8 +57,11 @@ typings/
 # dotenv environment variables file
 .env
 
-# environment variables
-.sh
-
 # next.js build output
 .next
+
+# environment variables
+*.sh
+
+# described in package.json. install with $npm install
+node_modules
