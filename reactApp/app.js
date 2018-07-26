@@ -1,16 +1,11 @@
 var React = require('react');
 var ReactDOM = require('react-dom');
 
-var dummyData = [
-  "Wash the dishes",
-  "Take out the trash",
-  "Lorem ipsum delorum",
-  "Finish some really difficult and challenging task that requires a lot of characters in a string.",
-  "idk",
-  "learn react",
-  "make a todo list manager"
-];
-
+/**
+Props:
+  description
+  isComplete
+**/
 class Todo extends React.Component {
   constructor(props) {
     super(props);
@@ -18,18 +13,66 @@ class Todo extends React.Component {
 
   render() {
     return (
-      <li> {this.props.description} </li>
+      this.props.description?
+      <li><button type="button">X</button> {this.props.description} </li>
+      : <li><button type="button">X</button> <strike>{this.props.description}</strike> </li>
     )
   }
 }
 class TodoList extends React.Component {
   constructor(props) {
     super(props);
+    this.state = {
+      list: []
+    };
   }
 
+  addElement(description) {
+    this.setState((prevState, props) => {
+      return {
+        list: prevState.list.concat(
+          <Todo key={prevState.list.length} description={description} isComplete={false} />
+        )
+      }
+    });
+  }
   render() {
     return (
-      <ul> {dummyData.map((d, i) => <Todo key={i} description={d} />)}</ul>
+      <div>
+        <InputLine listPtr={this} />
+        <ul>{this.state.list}</ul>
+      </div>
+    )
+  }
+}
+
+
+class InputLine extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      textValue: ""
+    };
+    this.handleSubmit = this.handleSubmit.bind(this);
+    this.handleTextValueChange = this.handleTextValueChange.bind(this);
+  }
+
+  handleSubmit(event) {
+    event.preventDefault();
+    console.log("adding "+this.state.textValue);
+    this.props.listPtr.addElement(this.state.textValue);
+  }
+  handleTextValueChange(event) {
+    this.setState({ textValue: event.target.value });
+  }
+  render() {
+    return (
+      <div>
+        <form onSubmit={this.handleSubmit}>
+          <input type="text" value={this.state.textValue} onChange={this.handleTextValueChange} />
+          <button type="submit" value="Add todo" />
+        </form>
+      </div>
     )
   }
 }
